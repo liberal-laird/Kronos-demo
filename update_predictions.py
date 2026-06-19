@@ -31,7 +31,7 @@ def load_model():
     """Loads the Kronos model and tokenizer."""
     print("Loading Kronos model...")
     tokenizer = KronosTokenizer.from_pretrained("NeoQuasar/Kronos-Tokenizer-2k", cache_dir=Config["MODEL_PATH"])
-    model = Kronos.from_pretrained("NeoQuasar/Kronos-mini", cache_dir=Config["MODEL_PATH"])
+    model = Kronos.from_pretrained("NeoQuasar/Kronos-base", cache_dir=Config["MODEL_PATH"])
     tokenizer.eval()
     model.eval()
     predictor = KronosPredictor(model, tokenizer, device="cpu", max_context=512)
@@ -238,12 +238,8 @@ def main_task(model):
 
     upside_prob, vol_amp_prob = calculate_metrics(hist_df_for_metrics, close_preds, v_close_preds)
     create_plot(hist_df_for_plot, close_preds, volume_preds)
-    update_html(upside_prob, vol_amp_prob)
 
-    commit_message = f"Auto-update forecast for {datetime.now(timezone.utc):%Y-%m-%d %H:%M} UTC"
-    git_commit_and_push(commit_message)
 
-    # --- 新增的内存清理步骤 ---
     # 显式删除大的DataFrame对象，帮助垃圾回收器
     del df_full, df_for_model, close_preds, volume_preds, v_close_preds
     del hist_df_for_plot, hist_df_for_metrics
