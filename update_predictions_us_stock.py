@@ -28,7 +28,7 @@ from model import KronosTokenizer, Kronos, KronosPredictor
 # --- Configuration ---
 Config = {
     "REPO_PATH": Path(__file__).parent.resolve(),
-    "MODEL_PATH": "../Kronos_model",
+    "MODEL_PATH": "hf_model",
 
     # --- 美股设定 ---
     "SYMBOL": "CRCL",                # 美股 ticker，如 AAPL, MSFT, GOOGL, TSLA, AMZN ...
@@ -281,36 +281,6 @@ def create_plot(hist_df, close_preds_df, volume_preds_df):
     print(f"Chart saved to: {chart_path}")
 
 
-
-def git_commit_and_push(commit_message):
-    """提交并推送到 Git。"""
-    print("Performing Git operations...")
-    try:
-        os.chdir(Config["REPO_PATH"])
-        subprocess.run(
-            ["git", "add", "prediction_chart_us_stock.png", "index.html"],
-            check=True, capture_output=True, text=True,
-        )
-        commit_result = subprocess.run(
-            ["git", "commit", "-m", commit_message],
-            check=True, capture_output=True, text=True,
-        )
-        print(commit_result.stdout)
-        push_result = subprocess.run(
-            ["git", "push"],
-            check=True, capture_output=True, text=True,
-        )
-        print(push_result.stdout)
-        print("Git push successful.")
-    except subprocess.CalledProcessError as e:
-        output = e.stdout if e.stdout else e.stderr
-        if "nothing to commit" in output or "Your branch is up to date" in output:
-            print("No new changes to commit or push.")
-        else:
-            print(
-                f"A Git error occurred:\n"
-                f"--- STDOUT ---\n{e.stdout}\n--- STDERR ---\n{e.stderr}"
-            )
 
 
 def print_summary(hist_df, close_preds_df, upside_prob, vol_amp_prob):
