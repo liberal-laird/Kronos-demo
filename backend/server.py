@@ -55,11 +55,15 @@ app.blueprint(predictions_bp)
 # --- 静态文件 (前端构建后放在 frontend/dist/) ---
 import os as _os
 _static_dir = _os.path.join(_os.path.dirname(__file__), "..", "frontend", "dist")
+_static_dir = _os.path.abspath(_static_dir)
 if _os.path.isdir(_static_dir):
     app.static("/assets", _os.path.join(_static_dir, "assets"))
-    app.static("/", _static_dir, index="index.html")
+    app.static("/", _static_dir, index="index.html", name="frontend")
+    print(f"[server] Serving static files from {_static_dir}")
 elif not SANIC_DEBUG:
     print("[server] WARNING: frontend/dist not found — run 'npm run build' in frontend/")
+else:
+    print("[server] Debug mode: static files not served (run 'npm run dev' in frontend/)")
 @app.middleware("response")
 async def add_cors_headers(request, response):
     response.headers["Access-Control-Allow-Origin"] = "*"
