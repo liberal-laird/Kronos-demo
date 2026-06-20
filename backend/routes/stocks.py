@@ -9,22 +9,6 @@ from backend.models.stock import Stock
 
 stocks_bp = Blueprint("stocks", url_prefix="/api/stocks")
 
-# 种子数据 — 首次启动时自动写入
-SEED_SYMBOLS = [
-    "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA",
-    "META", "NVDA", "NFLX", "AMD", "INTC",
-    "BABA", "JD", "SQ", "SNAP", "UBER",
-    "PYPL", "DIS", "BA", "JPM", "GS",
-]
-
-
-@stocks_bp.listener("before_server_start")
-async def seed_stocks(app, loop):
-    """确保种子数据存在。"""
-    for sym in SEED_SYMBOLS:
-        await Stock.get_or_create(symbol=sym)
-    print(f"[stocks] Seeded {len(SEED_SYMBOLS)} symbols.")
-
 
 @stocks_bp.get("/")
 async def list_stocks(request):

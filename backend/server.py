@@ -12,10 +12,17 @@ app = Sanic("KronosDemo")
 
 @app.listener("before_server_start")
 async def setup_predictor(app):
-    """服务启动前加载 Kronos 模型并启动定时任务。"""
+    """服务启动前加载 Kronos 模型、种子股票、启动定时任务。"""
     from backend.services.predictor import get_predictor
     app.ctx.predictor = await get_predictor()
     print("[server] Kronos predictor loaded.")
+
+    # 种子股票 (放在 server 启动时，确保表已创建)
+    from backend.models.stock import Stock
+    seed = ["AAPL","MSFT","GOOGL","AMZN","TSLA","META","NVDA","NFLX","AMD","INTC","BABA","JD","SQ","SNAP","UBER","PYPL","DIS","BA","JPM","GS"]
+    for sym in seed:
+        await Stock.get_or_create(symbol=sym)
+    print(f"[server] Seeded {len(seed)} stocks.")
 
     from backend.tasks.scheduler import start_scheduler
     start_scheduler(app)
