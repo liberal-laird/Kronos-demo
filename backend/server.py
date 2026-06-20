@@ -52,7 +52,14 @@ app.blueprint(stocks_bp)
 app.blueprint(predictions_bp)
 
 
-# --- CORS (开发阶段宽松) ---
+# --- 静态文件 (前端构建后放在 frontend/dist/) ---
+import os as _os
+_static_dir = _os.path.join(_os.path.dirname(__file__), "..", "frontend", "dist")
+if _os.path.isdir(_static_dir):
+    app.static("/assets", _os.path.join(_static_dir, "assets"))
+    app.static("/", _static_dir, index="index.html")
+elif not SANIC_DEBUG:
+    print("[server] WARNING: frontend/dist not found — run 'npm run build' in frontend/")
 @app.middleware("response")
 async def add_cors_headers(request, response):
     response.headers["Access-Control-Allow-Origin"] = "*"
