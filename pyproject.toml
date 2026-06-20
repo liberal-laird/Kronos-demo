@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
     "aiohttp>=3.13.5",
+    "apscheduler>=3.10.0",
     "binance>=0.3.110",
     "cryptography>=47.0.0",
     "einops>=0.8.2",
@@ -16,5 +17,9 @@ dependencies = [
     "python-binance>=1.0.37",
     "requests>=2.32.5",
     "safetensors>=0.7.0",
+    "sanic>=24.6.0",
+    "sanic-ext>=24.6.0",
+    "tortoise-orm[asyncpg]>=0.20.0",
     "torch==2.2.2",
+    "yfinance>=0.2.0",
 ]
